@@ -1,4 +1,4 @@
-CREATE TABLE EMP_XML (XML_ID generated as identity,XML_DATA XMLTYPE);
+CREATE TABLE EMP_XML (XML_ID NUMBER ,XML_DATA XMLTYPE);
 
 INSERT INTO EMP_XML VALUES('<?xml version="1.0" encoding="UTF-8"?>
 <DETAILS>
@@ -93,3 +93,39 @@ Select Emp.*
 
 
 
+--CREATE TABLE EMP_XML (XML_ID NUMBER ,XML_DATA XMLTYPE);
+--COMMIT;
+
+SELECT EXTRACTVALUE(XML_DATA,'DETAILS/EMP_ID') EMPID,
+    EXTRACTVALUE(XML_DATA,'DETAILS/EMP_NAME') EMPNM,
+    EXTRACTVALUE(XML_DATA,'DETAILS/EMP_SALARY') EMPSAL,
+    EXTRACTVALUE(XML_DATA,'DETAILS/EMP_DEPT') EMPDEPT,
+    EXTRACTVALUE(XML_DATA,'DETAILS/EMP_JOB_ID') JOBID  
+    FROM EMP_XML;
+
+
+
+SELECT EMP.* FROM EMP_XML X, XMLTABLE( '/DETAILS' PASSING X.XML_DATA 
+    COLUMNS "EMP_ID" VARCHAR2(30 BYTE) PATH 'EMP_ID') EMP;
+
+
+Select Emp.*
+               FROM EMP_XML x,
+                    XMLTABLE (
+                       '/DETAILS'
+                       Passing X.Xml_Data
+                       COLUMNS "EMP_ID"  VARCHAR2 (30 BYTE)
+                                  Path 'EMP_ID',
+                               "EMP_NME" VARCHAR2 (70 BYTE)
+                                  Path 'EMP_NAME',
+                               "EMP_SALARY"  NUMBER (5, 0)
+                                  Path 'EMP_SALARY',
+                               "EMP_DEPT"  VARCHAR2 (20 BYTE)
+                                  Path 'EMP_DEPT',
+                               "EMP_JOB_ID"  VARCHAR2 (50 BYTE)
+                                  PATH 'EMP_JOB_ID') Emp;
+
+
+
+SELECT EMP.* FROM EMP_XML X, XMLTABLE('/DETAILS' PASSING X.XML_DATA COLUMNS "EMPID" VARCHAR2(30) PATH 'EMP_ID',
+     "EMPNAME" VARCHAR2(30) PATH 'EMP_NAME') EMP
