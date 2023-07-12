@@ -1,0 +1,17 @@
+create table demo(id number ); -- Table Creation
+select * from demo; -- Query the table
+truncate table demo; -- truncating the table
+
+/* Below Block is the sample of Values of clause usage part of Bulk binding*/
+declare
+type my_array is table of number;
+mv_array my_array := my_array(2,4,6,8,10,12);
+type id_array is table of pls_integer index by pls_integer; -- Index Coll should be Nested table or Ass Array
+d_array id_array;
+begin
+    d_array (1) := 3;
+    forall idx in values of d_array
+        insert into demo values(mv_array(idx));
+end;
+/
+
